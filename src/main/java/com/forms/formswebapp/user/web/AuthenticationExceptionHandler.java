@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 class AuthenticationExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    ResponseEntity<?> handleException(final IllegalArgumentException e) {
+    ResponseEntity<?> handleException(final UserAlreadyExistsException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
