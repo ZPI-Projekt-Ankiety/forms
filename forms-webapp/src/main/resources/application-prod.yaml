@@ -1,0 +1,10 @@
+
+logging:
+  level:
+    root: INFO
+    org.springframework.data.mongodb: INFO
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://${USERNAME}:${PASSWORD}@survey.ne01c.mongodb.net/survey?retryWrites=true&w=majority&appName=survey

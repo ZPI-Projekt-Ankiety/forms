@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: forms-webapp
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/forms-db
+
+server:
+  port: ${PORT:8080}
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework.data.mongodb: DEBUG
+
+
+com:
+  forms:
+    signingKey: ${SIGNING_KEY:Li54Cpz9BvE1vpBPZIeu+dGo6ZQI0kXHz+TwWgPDACGvZOGzCdWKQ5rjckBt8wSA6twpnsfYaSRDaL/9lBsNQQ==}
