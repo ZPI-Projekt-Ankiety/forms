@@ -1,27 +1,35 @@
 version: '3.8'
 
 services:
-  mongo:
-    image: mongo:6.0
-    container_name: forms-db
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_DATABASE: forms-db
-    volumes:
-      - mongo_data:/data/forms-db
+  # mongo:
+  #   image: mongo:6.0
+  #   container_name: forms-db
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     MONGO_INITDB_DATABASE: forms-db
+  #   volumes:
+  #     - mongo_data:/data/forms-db
 
-  app:
+  # app:
+  #   build:
+  #     context: ./forms-webapp
+  #     dockerfile: Dockerfile
+  #   container_name: forms-webapp
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/forms-db
+  #   depends_on:
+  #     - mongo
+
+  spa:
     build:
-      context: ./forms-webapp
+      context: ./SPA
       dockerfile: Dockerfile
-    container_name: forms-webapp
     ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/forms-db
-    depends_on:
-      - mongo
+      - "8080:80"
+    restart: unless-stopped
 
 volumes:
   mongo_data:
