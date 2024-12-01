@@ -1,35 +1,65 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import styles from './App.module.scss';
-import classNames from 'classnames';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'; // Use BrowserRouter
+import { Box, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { Register } from './views/Register';
+import { Login } from './views/Login';
+import { useMemo } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const theme = useMemo(
+    () =>
+      createTheme({
+        components: {
+          MuiButton: {
+            styleOverrides: {
+              root: {
+                color: 'white',
+                display: 'flex',
+                flexWrap: 'nowrap',
+                height: '3rem',
+                borderColor: '#e51445',
+                borderRadius: '40px',
+                textTransform: 'capitalize',
+                fontWeight: '600',
+              },
+            },
+          },
+          MuiDivider: {
+            styleOverrides: {
+              root: {
+                borderColor: '#7743DB',
+              },
+            },
+          },
+          MuiPaper: {
+            styleOverrides: {
+              root: {
+                backgroundColor: '#FFFBF5',
+              },
+            },
+          },
+          MuiTextField: {
+            styleOverrides: {
+              root: {
+                width: '100%'
+              }
+            }
+          }
+        },
+      }),
+    []
+  );
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className={styles.logo} alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className={classNames(styles.logo, styles.react)} alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className={styles.card}>
-        <button onClick={() => setCount(count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR updates.
-        </p>
-      </div>
-      <p className={styles['read-the-docs']}>
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ width: '100vw', height: '100vh' }}>
+        <Router>
+          <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+          </Routes>
+        </Router>
+      </Box>
+    </ThemeProvider>
   );
 }
 
