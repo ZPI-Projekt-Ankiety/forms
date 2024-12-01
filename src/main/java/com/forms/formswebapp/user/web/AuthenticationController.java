@@ -11,6 +11,7 @@ import com.forms.formswebapp.user.domain.model.response.AuthenticationResponse;
 import com.forms.formswebapp.user.domain.model.request.RegisterRequest;
 
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/auth")
 class AuthenticationController {
