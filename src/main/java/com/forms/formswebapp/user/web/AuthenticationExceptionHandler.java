@@ -1,6 +1,8 @@
 package com.forms.formswebapp.user.web;
 
 import com.forms.formswebapp.user.domain.exception.UserAlreadyExistsException;
+import com.forms.formswebapp.user.security.ErrorResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,7 +12,8 @@ class AuthenticationExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     ResponseEntity<?> handleException(final UserAlreadyExistsException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        final ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, e);
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
 }
