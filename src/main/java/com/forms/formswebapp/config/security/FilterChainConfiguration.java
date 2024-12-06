@@ -1,5 +1,7 @@
 package com.forms.formswebapp.config.security;
 
+import com.forms.formswebapp.user.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,33 +13,21 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.forms.formswebapp.user.security.JwtAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.Arrays;
 import java.util.List;
 
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 class FilterChainConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
     private final HttpUnauthorizedEntryPoint unauthorizedEntryPoint;
     private final HttpAccessDeniedHandler accessDeniedHandler;
-
-    FilterChainConfiguration(final JwtAuthenticationFilter jwtAuthenticationFilter,
-                             final AuthenticationProvider authenticationProvider,
-                             final HttpUnauthorizedEntryPoint unauthorizedEntryPoint,
-                             final HttpAccessDeniedHandler accessDeniedHandler) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.authenticationProvider = authenticationProvider;
-        this.unauthorizedEntryPoint = unauthorizedEntryPoint;
-        this.accessDeniedHandler = accessDeniedHandler;
-    }
-
 
     @Bean
     SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {

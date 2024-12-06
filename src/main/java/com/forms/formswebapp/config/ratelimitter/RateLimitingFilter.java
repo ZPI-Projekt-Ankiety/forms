@@ -3,20 +3,17 @@ package com.forms.formswebapp.config.ratelimitter;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
 class RateLimitingFilter implements Filter {
 
     private final Bucket bucket;
-
-    @Autowired
-    public RateLimitingFilter(Bucket bucket) {
-        this.bucket = bucket;
-    }
 
     /**
      * Intercepts incoming requests and applies rate limiting.
