@@ -1,20 +1,20 @@
 package com.forms.formswebapp.form;
 
-import com.forms.formswebapp.form.dto.FormDto;
+import com.forms.formswebapp.form.dto.FormRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class FormService {
+class FormService {
 
     private final FormRepository formRepository;
 
-    public void createForm(FormDto formDto) {
+    void createForm(FormRequestDto formRequestDto) {
         Form form = Form.builder()
-                .title(formDto.title())
-                .closingTime(formDto.closingTime())
-                .questions(formDto.questions())
+                .title(formRequestDto.title())
+                .closingTime(formRequestDto.closingTime())
+                .questions(formRequestDto.questions())
                 .build();
         formRepository.save(form);
     }

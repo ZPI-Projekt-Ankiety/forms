@@ -1,6 +1,6 @@
 package com.forms.formswebapp.form;
 
-import com.forms.formswebapp.form.dto.FormDto;
+import com.forms.formswebapp.form.dto.FormRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ public class FormFacade {
 
     private final FormService formService;
 
-    public void createForm(FormDto formDto) {
-        formService.createForm(formDto);
+    public void createForm(FormRequestDto formRequestDto) {
+        formService.createForm(formRequestDto);
     }
 }
