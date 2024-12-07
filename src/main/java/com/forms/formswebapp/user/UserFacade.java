@@ -8,7 +8,7 @@ import com.forms.formswebapp.user.domain.UserService;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceExternal {
+public class UserFacade {
 
     private final UserService userService;
 
