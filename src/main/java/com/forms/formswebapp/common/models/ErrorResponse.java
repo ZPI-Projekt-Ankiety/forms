@@ -1,6 +1,5 @@
 package com.forms.formswebapp.common.models;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
 
