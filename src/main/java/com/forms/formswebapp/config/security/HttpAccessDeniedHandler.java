@@ -1,7 +1,7 @@
 package com.forms.formswebapp.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.forms.formswebapp.user.security.ErrorResponse;
+import com.forms.formswebapp.common.models.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

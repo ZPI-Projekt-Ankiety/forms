@@ -22,4 +22,17 @@ public class Form {
 
     private List<String> questions;
 
+    @Builder.Default
+    private Status status = Status.OPEN;
+
+
+    enum Status {
+        OPEN,
+        CLOSED
+    }
+
+    void expire() {
+        this.status = Status.CLOSED;
+    }
+
 }
