@@ -15,15 +15,12 @@ public class Form {
     @Id
     private String id;
 
-    @Getter
     private String title;
 
-    @Getter
     private LocalDateTime closingTime;
 
     private String link;
 
-    @Getter
     private List<String> questions;
 
     @Builder.Default

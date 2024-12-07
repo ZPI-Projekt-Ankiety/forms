@@ -1,6 +1,7 @@
 package com.forms.formswebapp.form;
 
 import com.forms.formswebapp.form.dto.FormRequestDto;
+import com.forms.formswebapp.form.dto.FormResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class FormController {
     }
 
     @GetMapping("/{link}")
-    public ResponseEntity<FormRequestDto> getFormByLink(@PathVariable String link) {
+    public ResponseEntity<FormResponseDto> getFormByLink(@PathVariable String link) {
         formFacade.getFormByLink(link);
         return new ResponseEntity<>(HttpStatus.OK);
     }
