@@ -20,4 +20,10 @@ public class FormController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/{link}")
+    public ResponseEntity<FormRequestDto> getFormByLink(@PathVariable String link) {
+        formFacade.getFormByLink(link);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

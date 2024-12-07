@@ -13,4 +13,6 @@ public class FormFacade {
     public void createForm(FormRequestDto formRequestDto) {
         formService.createForm(formRequestDto);
     }
+
+    public void getFormByLink(String link) { formService.getFormByLink(link); }
 }
