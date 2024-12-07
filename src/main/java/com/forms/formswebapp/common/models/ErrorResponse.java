@@ -1,4 +1,4 @@
-package com.forms.formswebapp.user.security;
+package com.forms.formswebapp.common.models;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
