@@ -2,10 +2,9 @@ package com.forms.formswebapp.form;
 
 import com.forms.formswebapp.form.dto.FormRequestDto;
 import com.forms.formswebapp.form.dto.FormResponseDto;
+import com.forms.formswebapp.form.exception.FormNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,8 +39,9 @@ class FormService {
 
     FormResponseDto getFormByLink(String link) {
         Form form = formRepository.findByLink(link)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new FormNotFoundException("Form not found"));
 
         return new FormResponseDto(link);
     }
+
 }
