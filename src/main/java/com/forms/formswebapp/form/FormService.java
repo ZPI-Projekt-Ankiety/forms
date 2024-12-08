@@ -41,7 +41,12 @@ class FormService {
         Form form = formRepository.findByLink(link)
                 .orElseThrow(() -> new FormNotFoundException("Form not found"));
 
-        return new FormResponseDto(link);
+        return new FormResponseDto(
+                link,
+                form.getTitle(),
+                form.getClosingTime(),
+                form.getQuestions()
+        );
     }
 
 }
