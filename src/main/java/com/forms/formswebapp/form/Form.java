@@ -1,6 +1,7 @@
 package com.forms.formswebapp.form;
 
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,12 +15,15 @@ public class Form {
     @Id
     private String id;
 
+    @Getter
     private String title;
 
+    @Getter
     private LocalDateTime closingTime;
 
     private String link;
 
+    @Getter
     private List<String> questions;
 
     @Builder.Default
