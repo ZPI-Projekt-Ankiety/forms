@@ -18,3 +18,14 @@ logging:
 com:
   forms:
     signingKey: ${SIGNING_KEY:Li54Cpz9BvE1vpBPZIeu+dGo6ZQI0kXHz+TwWgPDACGvZOGzCdWKQ5rjckBt8wSA6twpnsfYaSRDaL/9lBsNQQ==}
+    mail:
+      webAppUrl: ${WEB_APP_URL}
+      sendGrid:
+        apiKey: ${SENDGRID_API_KEY}
+        fromEmail: ${SENDGRID_FROM}
+        fromName: "Best Surveys"
+      welcomeTemplate:
+        templateId: "d-a0bf1d25691e4b80913ef51f3e842408"
+        requiredDynamicFields:
+          - "title"
+          - "dynamic_url"
