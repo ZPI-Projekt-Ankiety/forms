@@ -8,3 +8,17 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://${USERNAME}:${PASSWORD}@${DB_NAME}.ne01c.mongodb.net/${DB_NAME}?retryWrites=true&w=majority&appName=${DB_NAME}
+
+com:
+  forms:
+    mail:
+      webAppUrl: ${WEB_APP_URL}
+      sendGrid:
+        apiKey: ${SENDGRID_API_KEY}
+        fromEmail: ${SENDGRID_FROM}
+        fromName: "Best Surveys"
+      welcomeTemplate:
+        templateId: "d-a0bf1d25691e4b80913ef51f3e842408"
+        requiredDynamicFields:
+          - "title"
+          - "dynamic_url"
