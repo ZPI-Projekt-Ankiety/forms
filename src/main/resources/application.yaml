@@ -19,10 +19,10 @@ com:
   forms:
     signingKey: ${SIGNING_KEY:Li54Cpz9BvE1vpBPZIeu+dGo6ZQI0kXHz+TwWgPDACGvZOGzCdWKQ5rjckBt8wSA6twpnsfYaSRDaL/9lBsNQQ==}
     mail:
-      webAppUrl: ${WEB_APP_URL}
+      webAppUrl: ${WEB_APP_URL:http://localhost:4200}
       sendGrid:
-        apiKey: ${SENDGRID_API_KEY}
-        fromEmail: ${SENDGRID_FROM}
+        apiKey: ${SENDGRID_API_KEY:API_KEY}
+        fromEmail: ${SENDGRID_FROM:example@forms.com}
         fromName: "Best Surveys"
       welcomeTemplate:
         templateId: "d-a0bf1d25691e4b80913ef51f3e842408"
