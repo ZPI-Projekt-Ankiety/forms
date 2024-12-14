@@ -1,30 +1,34 @@
 package com.forms.formswebapp.form;
 
+import com.forms.formswebapp.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Document(collection = "forms")
 @Builder
+@Setter
+@Getter
 public class Form {
 
     @Id
     private String id;
 
-    @Getter
     private String title;
 
-    @Getter
     private LocalDateTime closingTime;
 
     private String link;
 
-    @Getter
-    private List<String> questions;
+    private User user;
+
+    private List<FormQuestion> questions;
 
     @Builder.Default
     private Status status = Status.OPEN;

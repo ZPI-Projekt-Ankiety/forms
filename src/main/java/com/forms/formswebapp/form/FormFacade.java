@@ -1,8 +1,10 @@
 package com.forms.formswebapp.form;
 
-import com.forms.formswebapp.form.dto.FormRequestDto;
+import com.forms.formswebapp.form.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -10,9 +12,23 @@ public class FormFacade {
 
     private final FormService formService;
 
-    public void createForm(FormRequestDto formRequestDto) {
-        formService.createForm(formRequestDto);
+    public FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto) {
+        return formService.createForm(formCreationRequestDto);
     }
 
-    public void getFormByLink(String link) { formService.getFormByLink(link); }
+    public FormResponseDto getFormResponseDtoByLink(String link) {
+        return formService.getFormResponseDtoByLink(link);
+    }
+
+    public void fillOutForm(String linkId, FormFillOutRequestDto formFillOutRequestDto) {
+        formService.fillOutForm(linkId, formFillOutRequestDto);
+    }
+
+    public FilledOutFormDto getFilledOutForm(String filledOutFormId) {
+        return formService.getFilledOutFormDto(filledOutFormId);
+    }
+
+    public List<FilledOutFormDto> getAnswersForForm(String link) {
+        return formService.getAnswersForForm(link);
+    }
 }

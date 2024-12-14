@@ -1,11 +1,13 @@
 package com.forms.formswebapp.form;
 
-import com.forms.formswebapp.form.dto.FormRequestDto;
-import com.forms.formswebapp.form.dto.FormResponseDto;
+import com.forms.formswebapp.form.dto.*;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -16,15 +18,34 @@ public class FormController {
     private final FormFacade formFacade;
 
     @PostMapping
-    public ResponseEntity<Void> createForm(@RequestBody FormRequestDto formRequestDto) {
-        formFacade.createForm(formRequestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<FormLinkDto> createForm(@RequestBody FormCreationRequestDto formCreationRequestDto) {
+        FormLinkDto formLinkDto = formFacade.createForm(formCreationRequestDto);
+        return new ResponseEntity<>(formLinkDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{linkId}")
+    public ResponseEntity<Void> fillOutForm(@PathVariable String linkId,
+                                            @RequestBody FormFillOutRequestDto formFillOutRequestDto) {
+        formFacade.fillOutForm(linkId, formFillOutRequestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{link}")
     public ResponseEntity<FormResponseDto> getFormByLink(@PathVariable String link) {
-        formFacade.getFormByLink(link);
-        return new ResponseEntity<>(HttpStatus.OK);
+        FormResponseDto formByLink = formFacade.getFormResponseDtoByLink(link);
+        return new ResponseEntity<>(formByLink, HttpStatus.OK);
+    }
+
+    @GetMapping("/answer/{filledOutFormId}")
+    public ResponseEntity<FilledOutFormDto> getFilledOutForm(@PathVariable String filledOutFormId) {
+        FilledOutFormDto filledOutForm = formFacade.getFilledOutForm(filledOutFormId);
+        return new ResponseEntity<>(filledOutForm, HttpStatus.OK);
+    }
+
+    @GetMapping("/{link}/answers")
+    public ResponseEntity<List<FilledOutFormDto>> getAnswersForForm(@PathVariable String link) {
+        List<FilledOutFormDto> answersForForm = formFacade.getAnswersForForm(link);
+        return new ResponseEntity<>(answersForForm, HttpStatus.OK);
     }
 
 }
