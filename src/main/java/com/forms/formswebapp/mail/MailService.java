@@ -26,17 +26,17 @@ class MailService {
     private final MailConfiguration mailConfiguration;
 
 
-    void sendExpiredFormNotification(final String recipient, final String formName, final String link) {
+    void sendExpiredFormNotification(final ExpiredFormNotificationDto request) {
         //TODO - add link to the url
         final String webAppUrl = mailConfiguration.getWebAppUrl();
         final MailConfiguration.TemplateConfig welcomeTemplate = mailConfiguration.getWelcomeTemplate();
-        final Map<String, Object> dynamicFields = Map.of("title", formName, "dynamic_url", webAppUrl);
+        final Map<String, Object> dynamicFields = Map.of("title", request.formName(), "dynamic_url", webAppUrl);
 
         validateDynamicFields(welcomeTemplate.getRequiredDynamicFields(), dynamicFields);
-        final DynamicTemplate template = buildDynamicTemplate(dynamicFields, recipient);
+        final DynamicTemplate template = buildDynamicTemplate(dynamicFields, request.recipient());
         final Mail mail = buildMail(template, welcomeTemplate.getTemplateId());
         final Response response = sendMail(mail);
-        log.info("sendExpiredFormNotification() - email sent - to = {} - response = {}", recipient, response.getStatusCode());
+        log.info("sendExpiredFormNotification() - email sent - to = {} - response = {}", request.recipient(), response.getStatusCode());
     }
 
     private DynamicTemplate buildDynamicTemplate(final Map<String, Object> dynamicFields, final String recipient) {

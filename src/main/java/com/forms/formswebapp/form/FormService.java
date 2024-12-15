@@ -2,8 +2,10 @@ package com.forms.formswebapp.form;
 
 import com.forms.formswebapp.form.dto.*;
 import com.forms.formswebapp.form.exception.FormNotFoundException;
+import com.forms.formswebapp.mail.ExpiredFormNotificationDto;
+import com.forms.formswebapp.mail.MailFacade;
+import com.forms.formswebapp.user.UserFacade;
 import com.forms.formswebapp.user.domain.User;
-import com.forms.formswebapp.user.domain.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,8 @@ class FormService {
     private final FormAnswerRepository formAnswerRepository;
     private final FormQuestionRepository formQuestionRepository;
     private final FilledOutFormRepository filledOutFormRepository;
-    private final UserService userService;
+    private final UserFacade userService;
+    private final MailFacade mailFacade;
 
     FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto) {
         String uniqueLink = UUID.randomUUID().toString();
@@ -71,12 +74,16 @@ class FormService {
 
     void updateExpiredForms() {
         final List<Form> expiredForms = formRepository.findByClosingTimeBeforeAndStatusNot(LocalDateTime.now(), Form.Status.CLOSED);
-        if (expiredForms.isEmpty()) {
-            return;
-        }
-        expiredForms.forEach(Form::expire);
-        formRepository.saveAll(expiredForms);
+        expiredForms.forEach(this::updateExpired);
     }
+
+    private void updateExpired(final Form form) {
+        form.expire();
+        formRepository.save(form);
+        final ExpiredFormNotificationDto request = new ExpiredFormNotificationDto(form.getUser().getEmail(), form.getTitle(), form.getLink());
+        mailFacade.sendExpiredFormNotification(request);
+    }
+
 
     Form getFormByLink(String link) {
         return formRepository.findByLink(link)
