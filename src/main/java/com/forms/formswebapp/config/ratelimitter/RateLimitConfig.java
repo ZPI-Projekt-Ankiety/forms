@@ -14,7 +14,7 @@ class RateLimitConfig {
 
     @Bean
     Bucket bucket() {
-        Bandwidth limit = Bandwidth.classic(10, Refill.greedy(10, Duration.ofMinutes(1)));
+        Bandwidth limit = Bandwidth.classic(300, Refill.greedy(300, Duration.ofMinutes(1)));
         return Bucket4j.builder().addLimit(limit).build();
     }
 }
