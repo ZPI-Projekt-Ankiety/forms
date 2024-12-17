@@ -12,7 +12,7 @@ class FormClosingScheduler {
 
     private final FormService formService;
 
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "*/5 * * * * *")
     void closeForms() {
         formService.updateExpiredForms();
     }
