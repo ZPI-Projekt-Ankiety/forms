@@ -1,7 +1,6 @@
 package com.forms.formswebapp.form;
 
 import com.forms.formswebapp.form.dto.*;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +45,12 @@ public class FormController {
     public ResponseEntity<List<FilledOutFormDto>> getAnswersForForm(@PathVariable String link) {
         List<FilledOutFormDto> answersForForm = formFacade.getAnswersForForm(link);
         return new ResponseEntity<>(answersForForm, HttpStatus.OK);
+    }
+
+    @GetMapping("/{formId}/answer-count")
+    public ResponseEntity<Long> getAnswerCount(@PathVariable String formId) {
+        long count = formFacade.getCountOfAnswersByFormId(formId);
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
 }

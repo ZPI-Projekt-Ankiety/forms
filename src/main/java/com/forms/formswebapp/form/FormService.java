@@ -139,6 +139,13 @@ class FormService {
                 .toList();
     }
 
+    long countAnswersByFormId(String formId) {
+        Form form = getFormByLink(formId);
+        List<FilledOutForm> answeredForms = filledOutFormRepository.findAllByFormIdIs(form.getId());
+
+        return answeredForms.size();
+    }
+
     private static void validateFormNotClosed(String linkId, Form form) {
         if(form.getStatus() == Form.Status.CLOSED) {
             throw new IllegalArgumentException("Form with link %s is closed".formatted(linkId));

@@ -31,4 +31,9 @@ public class FormFacade {
     public List<FilledOutFormDto> getAnswersForForm(String link) {
         return formService.getAnswersForForm(link);
     }
+
+    public long getCountOfAnswersByFormId(String formId) {
+        return formService.countAnswersByFormId(formId);
+    }
+
 }
