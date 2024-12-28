@@ -53,4 +53,12 @@ public class FormController {
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
+    @PutMapping("/{formId}/closing-time")
+    public ResponseEntity<Form> updateClosingTime(
+            @PathVariable String formId,
+            @RequestBody UpdateClosingTimeRequestDto request) {
+        Form updatedForm = formFacade.updateFormClosingTime(formId, request.newClosingTime());
+        return new ResponseEntity<>(updatedForm, HttpStatus.OK);
+    }
+
 }
