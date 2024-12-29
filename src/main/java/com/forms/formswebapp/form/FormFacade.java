@@ -4,6 +4,7 @@ import com.forms.formswebapp.form.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -34,6 +35,10 @@ public class FormFacade {
 
     public long getCountOfAnswersByFormId(String formId) {
         return formService.countAnswersByFormId(formId);
+    }
+
+    public Form updateFormClosingTime(String formId, LocalDateTime newClosingDate) {
+        return formService.updateFormClosingTime(formId, newClosingDate);
     }
 
 }

@@ -146,6 +146,12 @@ class FormService {
         return answeredForms.size();
     }
 
+    Form updateFormClosingTime(String formId, LocalDateTime newClosingTime) {
+        Form form = getFormByLink(formId);
+        form.setClosingTime(newClosingTime);
+        return formRepository.save(form);
+    }
+
     private static void validateFormNotClosed(String linkId, Form form) {
         if(form.getStatus() == Form.Status.CLOSED) {
             throw new IllegalArgumentException("Form with link %s is closed".formatted(linkId));
