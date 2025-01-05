@@ -37,7 +37,7 @@ public class FormFacade {
         return formService.countAnswersByFormId(formId);
     }
 
-    public Form updateFormClosingTime(String formId, LocalDateTime newClosingDate) {
+    public UpdateClosingTimeRequestDto updateFormClosingTime(String formId, LocalDateTime newClosingDate) {
         return formService.updateFormClosingTime(formId, newClosingDate);
     }
 

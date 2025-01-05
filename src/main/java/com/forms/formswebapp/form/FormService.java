@@ -146,10 +146,14 @@ class FormService {
         return answeredForms.size();
     }
 
-    Form updateFormClosingTime(String formId, LocalDateTime newClosingTime) {
+    UpdateClosingTimeRequestDto updateFormClosingTime(String formId, LocalDateTime newClosingTime) {
         Form form = getFormByLink(formId);
         form.setClosingTime(newClosingTime);
-        return formRepository.save(form);
+        formRepository.save(form);
+
+        return UpdateClosingTimeRequestDto.builder()
+                .newClosingTime(form.getClosingTime())
+                .build();
     }
 
     private static void validateFormNotClosed(String linkId, Form form) {
