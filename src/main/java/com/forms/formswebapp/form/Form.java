@@ -21,6 +21,9 @@ public class Form {
 
     private String title;
 
+    @Builder.Default
+    private LocalDateTime startDate = LocalDateTime.now();
+
     private LocalDateTime closingTime;
 
     private String link;
