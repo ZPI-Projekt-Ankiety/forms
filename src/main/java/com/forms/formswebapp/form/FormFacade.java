@@ -4,6 +4,7 @@ import com.forms.formswebapp.form.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,4 +32,17 @@ public class FormFacade {
     public List<FilledOutFormDto> getAnswersForForm(String link) {
         return formService.getAnswersForForm(link);
     }
+
+    public long getCountOfAnswersByFormId(String formId) {
+        return formService.countAnswersByFormId(formId);
+    }
+
+    public UpdateClosingTimeRequestDto updateFormClosingTime(String formId, LocalDateTime newClosingDate) {
+        return formService.updateFormClosingTime(formId, newClosingDate);
+    }
+
+    public List<UserFormsDto> getUserForms(final String email) {
+        return formService.getUserForms(email);
+    }
+
 }

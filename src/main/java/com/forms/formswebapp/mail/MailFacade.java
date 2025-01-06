@@ -10,8 +10,8 @@ public class MailFacade {
     private final MailService mailService;
 
 
-    public void sendExpiredFormNotification(final String recipient, final String formName, final String link) {
-        mailService.sendExpiredFormNotification(recipient, formName, link);
+    public void sendExpiredFormNotification(final ExpiredFormNotificationDto request) {
+        mailService.sendExpiredFormNotification(request);
     }
 
 }

@@ -2,8 +2,10 @@ package com.forms.formswebapp.form;
 
 import com.forms.formswebapp.form.dto.*;
 import com.forms.formswebapp.form.exception.FormNotFoundException;
+import com.forms.formswebapp.mail.ExpiredFormNotificationDto;
+import com.forms.formswebapp.mail.MailFacade;
+import com.forms.formswebapp.user.UserFacade;
 import com.forms.formswebapp.user.domain.User;
-import com.forms.formswebapp.user.domain.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,8 @@ class FormService {
     private final FormAnswerRepository formAnswerRepository;
     private final FormQuestionRepository formQuestionRepository;
     private final FilledOutFormRepository filledOutFormRepository;
-    private final UserService userService;
+    private final UserFacade userService;
+    private final MailFacade mailFacade;
 
     FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto) {
         String uniqueLink = UUID.randomUUID().toString();
@@ -71,12 +74,16 @@ class FormService {
 
     void updateExpiredForms() {
         final List<Form> expiredForms = formRepository.findByClosingTimeBeforeAndStatusNot(LocalDateTime.now(), Form.Status.CLOSED);
-        if (expiredForms.isEmpty()) {
-            return;
-        }
-        expiredForms.forEach(Form::expire);
-        formRepository.saveAll(expiredForms);
+        expiredForms.forEach(this::updateExpired);
     }
+
+    private void updateExpired(final Form form) {
+        form.expire();
+        formRepository.save(form);
+        final ExpiredFormNotificationDto request = new ExpiredFormNotificationDto(form.getUser().getEmail(), form.getTitle(), form.getLink());
+        mailFacade.sendExpiredFormNotification(request);
+    }
+
 
     Form getFormByLink(String link) {
         return formRepository.findByLink(link)
@@ -98,6 +105,17 @@ class FormService {
                                 .build())
                         .toList())
                 .build();
+    }
+
+
+    List<UserFormsDto> getUserForms(final String email) {
+        final User user = userService.getUserByEmailOrThrow(email);
+        final List<Form> forms = formRepository.findByUser(user);
+
+        return forms.stream().map(form -> {
+            final FilledOutForm filledOutForm = filledOutFormRepository.findById(form.getId()).orElse(null);
+            return UserFormsDto.from(form, filledOutForm);
+        }).toList();
     }
 
     FilledOutForm getFilledOutForm(String filledOutFormId) {
@@ -130,6 +148,23 @@ class FormService {
                 .userEmail(filledOutForm.getUserEmail())
                 .build())
                 .toList();
+    }
+
+    long countAnswersByFormId(String formId) {
+        Form form = getFormByLink(formId);
+        List<FilledOutForm> answeredForms = filledOutFormRepository.findAllByFormIdIs(form.getId());
+
+        return answeredForms.size();
+    }
+
+    UpdateClosingTimeRequestDto updateFormClosingTime(String formId, LocalDateTime newClosingTime) {
+        Form form = getFormByLink(formId);
+        form.setClosingTime(newClosingTime);
+        formRepository.save(form);
+
+        return UpdateClosingTimeRequestDto.builder()
+                .newClosingTime(form.getClosingTime())
+                .build();
     }
 
     private static void validateFormNotClosed(String linkId, Form form) {
