@@ -167,6 +167,17 @@ class FormService {
                 .build();
     }
 
+    List<FormResponseDto> getUserCreatedForms(String email) {
+        User user = userService.getUserByEmailOrThrow(email);
+        List<Form> userCreatedForms = formRepository.findByUser(user);
+        return userCreatedForms.stream().map(form -> FormResponseDto.builder()
+                .link(form.getLink())
+                .title(form.getTitle())
+                .closingTime(form.getClosingTime())
+                .userEmail(form.getUser().getEmail())
+                .build()).toList();
+    }
+
     private static void validateFormNotClosed(String linkId, Form form) {
         if(form.getStatus() == Form.Status.CLOSED) {
             throw new IllegalArgumentException("Form with link %s is closed".formatted(linkId));

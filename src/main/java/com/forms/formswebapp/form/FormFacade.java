@@ -45,4 +45,7 @@ public class FormFacade {
         return formService.getUserForms(email);
     }
 
+    public List<FormResponseDto> getUserCreatedForms(String name) {
+        return formService.getUserCreatedForms(name);
+    }
 }

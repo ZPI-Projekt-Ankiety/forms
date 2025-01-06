@@ -68,4 +68,10 @@ public class FormController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/user-created")
+    public ResponseEntity<?> getUserCreatedForms(final Authentication authentication) {
+        final List<FormResponseDto> userCreatedForms = formFacade.getUserCreatedForms(authentication.getName());
+        return ResponseEntity.ok(userCreatedForms);
+    }
+
 }
