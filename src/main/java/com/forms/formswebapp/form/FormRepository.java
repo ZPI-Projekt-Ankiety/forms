@@ -1,5 +1,6 @@
 package com.forms.formswebapp.form;
 
+import com.forms.formswebapp.user.domain.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDateTime;
@@ -11,5 +12,7 @@ interface FormRepository extends MongoRepository<Form, String> {
     List<Form> findByClosingTimeBeforeAndStatusNot(final LocalDateTime closingTime, final Form.Status status);
 
     Optional<Form> findByLink(String link);
+
+    List<Form> findByUser(final User user);
 
 }

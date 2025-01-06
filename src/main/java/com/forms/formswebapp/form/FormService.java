@@ -107,6 +107,17 @@ class FormService {
                 .build();
     }
 
+
+    List<UserFormsDto> getUserForms(final String email) {
+        final User user = userService.getUserByEmailOrThrow(email);
+        final List<Form> forms = formRepository.findByUser(user);
+
+        return forms.stream().map(form -> {
+            final FilledOutForm filledOutForm = filledOutFormRepository.findById(form.getId()).orElse(null);
+            return UserFormsDto.from(form, filledOutForm);
+        }).toList();
+    }
+
     FilledOutForm getFilledOutForm(String filledOutFormId) {
         return filledOutFormRepository.findById(filledOutFormId).orElseThrow(
                 () -> new EmptyResultDataAccessException("Filled out form not found", 1)

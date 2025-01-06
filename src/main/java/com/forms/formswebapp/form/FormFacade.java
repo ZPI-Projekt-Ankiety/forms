@@ -41,4 +41,8 @@ public class FormFacade {
         return formService.updateFormClosingTime(formId, newClosingDate);
     }
 
+    public List<UserFormsDto> getUserForms(final String email) {
+        return formService.getUserForms(email);
+    }
+
 }
