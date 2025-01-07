@@ -113,7 +113,7 @@ class FormService {
         final List<Form> forms = formRepository.findByUser(user);
 
         return forms.stream().map(form -> {
-            final FilledOutForm filledOutForm = filledOutFormRepository.findById(form.getId()).orElse(null);
+            final FilledOutForm filledOutForm = filledOutFormRepository.findByFormId(form.getId()).orElse(null);
             return UserFormsDto.from(form, filledOutForm);
         }).toList();
     }

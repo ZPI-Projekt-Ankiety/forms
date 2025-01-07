@@ -43,7 +43,8 @@ class AdminController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User successfully deleted"),
-            @ApiResponse(responseCode = "400", description = "User not found"),
+            @ApiResponse(responseCode = "400", description = "Cannot delete admin user"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "403", description = "Unauthorized")
     })
     @DeleteMapping("/{email}")
@@ -57,7 +58,8 @@ class AdminController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User successfully promoted"),
-            @ApiResponse(responseCode = "400", description = "User not found"),
+            @ApiResponse(responseCode = "404", description = "Cannot promote admin"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "403", description = "Unauthorized")
     })
     @PatchMapping("/promote/{email}")
