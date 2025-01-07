@@ -30,4 +30,10 @@ class AuthenticationExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    ResponseEntity<?> handleException(final IllegalStateException e) {
+        final ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
 }
