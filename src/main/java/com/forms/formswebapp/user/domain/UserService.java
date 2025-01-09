@@ -69,9 +69,23 @@ public class UserService implements UserDetailsService {
         return UserDto.from(saved);
     }
 
+    public UserDto demoteUser(final String email) {
+        final User user = getUserByEmailOrThrow(email);
+        this.checkIfAdmin(user);
+        user.setRole(Role.USER);
+        final User saved = userRepository.save(user);
+        return UserDto.from(saved);
+    }
+
     private void checkIfNotAdmin(final User user) {
         if (user.getRole() == Role.ADMIN) {
             throw new IllegalStateException("Cannot perform this operation on admin user");
+        }
+    }
+
+    private void checkIfAdmin(final User user) {
+        if (user.getRole() != Role.ADMIN) {
+            throw new IllegalStateException("Cannot perform this operation on regular user");
         }
     }
 
