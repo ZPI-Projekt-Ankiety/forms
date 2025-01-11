@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -93,7 +94,7 @@ public class FormService {
     }
 
 
-    public Form getFormByLink(String link) {
+    Form getFormByLink(String link) {
         return formRepository.findByLink(link)
                 .orElseThrow(() -> new FormNotFoundException("Form not found"));
     }
@@ -150,6 +151,7 @@ public class FormService {
 
         return answeredForms.stream().map(filledOutForm -> FilledOutFormDto.builder()
                 .id(filledOutForm.getId())
+                .filledOutAt(filledOutForm.getFilledOutTime())
                 .formAnswers(filledOutForm.getAnswers().stream()
                         .map(formAnswer -> new FormAnswerDto(formAnswer.getQuestionId(), formAnswer.getAnswer())
                         ).toList())
@@ -184,6 +186,11 @@ public class FormService {
                 .closingTime(form.getClosingTime())
                 .userEmail(form.getUser().getEmail())
                 .build()).toList();
+    }
+
+    Optional<User> getUserByFilledOutForm(String filledOutFormId) {
+        final FilledOutForm filledOutForm = getFilledOutForm(filledOutFormId);
+        return userService.getUserByEmail(filledOutForm.getUserEmail());
     }
 
     private static void validateFormNotClosed(String linkId, Form form) {

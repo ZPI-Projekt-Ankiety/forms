@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,10 @@ public class UserService implements UserDetailsService {
     public User getUserByEmailOrThrow(final String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public Optional<User> getUserByEmail(final String email) {
+        return userRepository.findByEmail(email);
     }
 
     boolean existsByEmail(final String email) {

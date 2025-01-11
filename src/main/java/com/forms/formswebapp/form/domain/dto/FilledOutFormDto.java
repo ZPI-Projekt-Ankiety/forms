@@ -2,6 +2,8 @@ package com.forms.formswebapp.form.domain.dto;
 
 import lombok.Builder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -9,6 +11,11 @@ import java.util.List;
 public record FilledOutFormDto(
         String id,
         String userEmail,
+        LocalDateTime filledOutAt,
         List<FormAnswerDto> formAnswers
 ) {
+
+    public LocalDate filledOutAtDay() {
+        return filledOutAt == null ? LocalDate.now() : filledOutAt.toLocalDate();
+    }
 }
