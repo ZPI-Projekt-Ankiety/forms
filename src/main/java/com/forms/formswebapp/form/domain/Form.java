@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.domain;
 
 import com.forms.formswebapp.user.domain.User;
 import lombok.Builder;

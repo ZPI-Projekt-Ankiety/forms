@@ -1,5 +1,6 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.web;
 
+import com.forms.formswebapp.form.FormFacade;
 import com.forms.formswebapp.form.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

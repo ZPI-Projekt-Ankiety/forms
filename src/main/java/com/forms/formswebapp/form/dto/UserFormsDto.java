@@ -1,7 +1,7 @@
 package com.forms.formswebapp.form.dto;
 
-import com.forms.formswebapp.form.FilledOutForm;
-import com.forms.formswebapp.form.Form;
+import com.forms.formswebapp.form.domain.FilledOutForm;
+import com.forms.formswebapp.form.domain.Form;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.domain;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
