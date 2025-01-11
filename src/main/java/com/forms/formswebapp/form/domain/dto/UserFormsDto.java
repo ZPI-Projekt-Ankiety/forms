@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form.dto;
+package com.forms.formswebapp.form.domain.dto;
 
 import com.forms.formswebapp.form.domain.FilledOutForm;
 import com.forms.formswebapp.form.domain.Form;

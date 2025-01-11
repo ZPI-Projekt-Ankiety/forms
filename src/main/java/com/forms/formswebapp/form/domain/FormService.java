@@ -1,7 +1,15 @@
 package com.forms.formswebapp.form.domain;
 
-import com.forms.formswebapp.form.dto.*;
-import com.forms.formswebapp.form.exception.FormNotFoundException;
+import com.forms.formswebapp.form.domain.dto.FilledOutFormDto;
+import com.forms.formswebapp.form.domain.dto.FormAnswerDto;
+import com.forms.formswebapp.form.domain.dto.FormCreationRequestDto;
+import com.forms.formswebapp.form.domain.dto.FormFillOutRequestDto;
+import com.forms.formswebapp.form.domain.dto.FormLinkDto;
+import com.forms.formswebapp.form.domain.dto.FormQuestionDto;
+import com.forms.formswebapp.form.domain.dto.FormResponseDto;
+import com.forms.formswebapp.form.domain.dto.UpdateClosingTimeRequestDto;
+import com.forms.formswebapp.form.domain.dto.UserFormsDto;
+import com.forms.formswebapp.form.domain.exception.FormNotFoundException;
 import com.forms.formswebapp.mail.ExpiredFormNotificationDto;
 import com.forms.formswebapp.mail.MailFacade;
 import com.forms.formswebapp.user.UserFacade;

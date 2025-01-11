@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form.dto;
+package com.forms.formswebapp.form.domain.dto;
 
 import lombok.Builder;
 

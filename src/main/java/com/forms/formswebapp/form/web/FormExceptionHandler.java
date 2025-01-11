@@ -1,7 +1,7 @@
 package com.forms.formswebapp.form.web;
 
 import com.forms.formswebapp.common.models.ErrorResponse;
-import com.forms.formswebapp.form.exception.FormNotFoundException;
+import com.forms.formswebapp.form.domain.exception.FormNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
