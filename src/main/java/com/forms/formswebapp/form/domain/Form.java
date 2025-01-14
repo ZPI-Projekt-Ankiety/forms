@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.domain;
 
 import com.forms.formswebapp.user.domain.User;
 import lombok.Builder;
@@ -34,6 +34,8 @@ public class Form {
 
     @Builder.Default
     private Status status = Status.OPEN;
+
+    private Boolean isPersonalDataRequired;
 
 
     enum Status {

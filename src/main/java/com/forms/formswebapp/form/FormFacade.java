@@ -1,7 +1,15 @@
 package com.forms.formswebapp.form;
 
-import com.forms.formswebapp.form.dto.*;
+import com.forms.formswebapp.form.domain.FormService;
+import com.forms.formswebapp.form.domain.dto.FilledOutFormDto;
+import com.forms.formswebapp.form.domain.dto.FormCreationRequestDto;
+import com.forms.formswebapp.form.domain.dto.FormFillOutRequestDto;
+import com.forms.formswebapp.form.domain.dto.FormLinkDto;
+import com.forms.formswebapp.form.domain.dto.FormResponseDto;
+import com.forms.formswebapp.form.domain.dto.UpdateClosingTimeRequestDto;
+import com.forms.formswebapp.form.domain.dto.UserFormsDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -13,16 +21,16 @@ public class FormFacade {
 
     private final FormService formService;
 
-    public FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto) {
-        return formService.createForm(formCreationRequestDto);
+    public FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto, Authentication authentication) {
+        return formService.createForm(formCreationRequestDto, authentication);
     }
 
     public FormResponseDto getFormResponseDtoByLink(String link) {
         return formService.getFormResponseDtoByLink(link);
     }
 
-    public void fillOutForm(String linkId, FormFillOutRequestDto formFillOutRequestDto) {
-        formService.fillOutForm(linkId, formFillOutRequestDto);
+    public void fillOutForm(String linkId, FormFillOutRequestDto formFillOutRequestDto, Authentication authentication) {
+        formService.fillOutForm(linkId, formFillOutRequestDto, authentication);
     }
 
     public FilledOutFormDto getFilledOutForm(String filledOutFormId) {

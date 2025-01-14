@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.domain;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,10 +10,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Getter
 @Setter
-public class FormQuestion {
+public class FormAnswer {
 
     @Id
     private String id;
-    private String question;
+    private String questionId;
+    private String answer;
 
 }

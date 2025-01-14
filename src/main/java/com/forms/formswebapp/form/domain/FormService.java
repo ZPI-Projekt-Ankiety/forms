@@ -1,24 +1,35 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.domain;
 
-import com.forms.formswebapp.form.dto.*;
-import com.forms.formswebapp.form.exception.FormNotFoundException;
+import com.forms.formswebapp.form.domain.dto.FilledOutFormDto;
+import com.forms.formswebapp.form.domain.dto.FormAnswerDto;
+import com.forms.formswebapp.form.domain.dto.FormCreationRequestDto;
+import com.forms.formswebapp.form.domain.dto.FormFillOutRequestDto;
+import com.forms.formswebapp.form.domain.dto.FormLinkDto;
+import com.forms.formswebapp.form.domain.dto.FormQuestionDto;
+import com.forms.formswebapp.form.domain.dto.FormResponseDto;
+import com.forms.formswebapp.form.domain.dto.RespondentData;
+import com.forms.formswebapp.form.domain.dto.UpdateClosingTimeRequestDto;
+import com.forms.formswebapp.form.domain.dto.UserFormsDto;
+import com.forms.formswebapp.form.domain.exception.FormNotFoundException;
 import com.forms.formswebapp.mail.ExpiredFormNotificationDto;
 import com.forms.formswebapp.mail.MailFacade;
 import com.forms.formswebapp.user.UserFacade;
 import com.forms.formswebapp.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-class FormService {
+public class FormService {
 
     private final FormRepository formRepository;
     private final FormAnswerRepository formAnswerRepository;
@@ -27,9 +38,9 @@ class FormService {
     private final UserFacade userService;
     private final MailFacade mailFacade;
 
-    FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto) {
+    public FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto, Authentication authentication) {
         String uniqueLink = UUID.randomUUID().toString();
-        User user = userService.getUserByEmailOrThrow(formCreationRequestDto.userEmail());
+        User user = userService.getUserByEmailOrThrow(authentication.getName());
 
         List<FormQuestion> questions = formCreationRequestDto.questions().stream()
                 .map(question -> FormQuestion.builder()
@@ -51,7 +62,7 @@ class FormService {
         return new FormLinkDto(savedForm.getLink());
     }
 
-    void fillOutForm(String linkId, FormFillOutRequestDto formFillOutRequestDto) {
+    public void fillOutForm(String linkId, FormFillOutRequestDto formFillOutRequestDto, Authentication authentication) {
         Form form = getFormByLink(linkId);
 
         validateFormNotClosed(linkId, form);
@@ -66,13 +77,13 @@ class FormService {
         List<FormAnswer> savedFormAnswers = formAnswerRepository.saveAll(answers);
         FilledOutForm filledOutForm = FilledOutForm.builder()
                 .formId(form.getId())
-                .userEmail(formFillOutRequestDto.userEmail())
+                .respondentData(buildRespondentData(authentication, formFillOutRequestDto))
                 .answers(savedFormAnswers)
                 .build();
         filledOutFormRepository.save(filledOutForm);
     }
 
-    void updateExpiredForms() {
+    public void updateExpiredForms() {
         final List<Form> expiredForms = formRepository.findByClosingTimeBeforeAndStatusNot(LocalDateTime.now(), Form.Status.CLOSED);
         expiredForms.forEach(this::updateExpired);
     }
@@ -90,7 +101,7 @@ class FormService {
                 .orElseThrow(() -> new FormNotFoundException("Form not found"));
     }
 
-    FormResponseDto getFormResponseDtoByLink(String link) {
+    public FormResponseDto getFormResponseDtoByLink(String link) {
         Form form = getFormByLink(link);
 
         return FormResponseDto.builder()
@@ -104,11 +115,12 @@ class FormService {
                                 .question(formQuestion.getQuestion())
                                 .build())
                         .toList())
+                .isPersonalDataRequired(form.getIsPersonalDataRequired())
                 .build();
     }
 
 
-    List<UserFormsDto> getUserForms(final String email) {
+    public List<UserFormsDto> getUserForms(final String email) {
         final User user = userService.getUserByEmailOrThrow(email);
         final List<Form> forms = formRepository.findByUser(user);
 
@@ -118,46 +130,47 @@ class FormService {
         }).toList();
     }
 
-    FilledOutForm getFilledOutForm(String filledOutFormId) {
+    public FilledOutForm getFilledOutForm(String filledOutFormId) {
         return filledOutFormRepository.findById(filledOutFormId).orElseThrow(
                 () -> new EmptyResultDataAccessException("Filled out form not found", 1)
         );
     }
 
-    FilledOutFormDto getFilledOutFormDto(String filledOutFormId) {
+    public FilledOutFormDto getFilledOutFormDto(String filledOutFormId) {
         FilledOutForm filledOutForm = getFilledOutForm(filledOutFormId);
 
         return FilledOutFormDto.builder()
                 .id(filledOutForm.getId())
-                .userEmail(filledOutForm.getUserEmail())
+                .respondentData(filledOutForm.getRespondentData())
                 .formAnswers(filledOutForm.getAnswers().stream()
                         .map(formAnswer -> new FormAnswerDto(formAnswer.getQuestionId(), formAnswer.getAnswer())
                 ).toList())
                 .build();
     }
 
-    List<FilledOutFormDto> getAnswersForForm(String link) {
+    public List<FilledOutFormDto> getAnswersForForm(String link) {
         Form formByLink = getFormByLink(link);
         List<FilledOutForm> answeredForms = filledOutFormRepository.findAllByFormIdIs(formByLink.getId());
 
         return answeredForms.stream().map(filledOutForm -> FilledOutFormDto.builder()
                 .id(filledOutForm.getId())
+                .filledOutAt(filledOutForm.getFilledOutTime())
                 .formAnswers(filledOutForm.getAnswers().stream()
                         .map(formAnswer -> new FormAnswerDto(formAnswer.getQuestionId(), formAnswer.getAnswer())
                         ).toList())
-                .userEmail(filledOutForm.getUserEmail())
+                .respondentData(filledOutForm.getRespondentData())
                 .build())
                 .toList();
     }
 
-    long countAnswersByFormId(String formId) {
+    public long countAnswersByFormId(String formId) {
         Form form = getFormByLink(formId);
         List<FilledOutForm> answeredForms = filledOutFormRepository.findAllByFormIdIs(form.getId());
 
         return answeredForms.size();
     }
 
-    UpdateClosingTimeRequestDto updateFormClosingTime(String formId, LocalDateTime newClosingTime) {
+    public UpdateClosingTimeRequestDto updateFormClosingTime(String formId, LocalDateTime newClosingTime) {
         Form form = getFormByLink(formId);
         form.setClosingTime(newClosingTime);
         formRepository.save(form);
@@ -167,7 +180,7 @@ class FormService {
                 .build();
     }
 
-    List<FormResponseDto> getUserCreatedForms(String email) {
+    public List<FormResponseDto> getUserCreatedForms(String email) {
         User user = userService.getUserByEmailOrThrow(email);
         List<Form> userCreatedForms = formRepository.findByUser(user);
         return userCreatedForms.stream().map(form -> FormResponseDto.builder()
@@ -175,7 +188,17 @@ class FormService {
                 .title(form.getTitle())
                 .closingTime(form.getClosingTime())
                 .userEmail(form.getUser().getEmail())
+                .isPersonalDataRequired(form.getIsPersonalDataRequired())
                 .build()).toList();
+    }
+
+    Optional<User> getUserByFilledOutForm(String filledOutFormId) {
+        final FilledOutForm filledOutForm = getFilledOutForm(filledOutFormId);
+        final RespondentData filledOutFormRespondentData = filledOutForm.getRespondentData();
+        if (filledOutFormRespondentData == null) {
+            return Optional.empty();
+        }
+        return userService.getUserByEmail(filledOutFormRespondentData.getUserEmail());
     }
 
     private static void validateFormNotClosed(String linkId, Form form) {
@@ -194,5 +217,13 @@ class FormService {
         if(!questionIds.equals(answeredQuestionIds)) {
             throw new IllegalArgumentException("Question IDs in filled out form do not match with actual question IDs");
         }
+    }
+
+    private RespondentData buildRespondentData(Authentication authentication, FormFillOutRequestDto request) {
+        if (authentication == null) {
+            return new RespondentData(request.userEmail(), request.birthDate(), request.gender());
+        }
+        User user = userService.getUserByEmailOrThrow(authentication.getName());
+        return new RespondentData(user.getEmail(), user.getBirthdate(), user.getGender());
     }
 }
