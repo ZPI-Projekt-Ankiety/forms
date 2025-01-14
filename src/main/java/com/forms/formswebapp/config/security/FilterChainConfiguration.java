@@ -38,6 +38,8 @@ class FilterChainConfiguration {
                 .authorizeHttpRequests(it -> it
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/forms/{link}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/forms/{link}").permitAll()
                         .anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();

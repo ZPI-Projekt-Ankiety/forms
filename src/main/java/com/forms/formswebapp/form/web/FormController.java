@@ -25,15 +25,17 @@ public class FormController {
     private final FormFacade formFacade;
 
     @PostMapping
-    public ResponseEntity<FormLinkDto> createForm(@RequestBody FormCreationRequestDto formCreationRequestDto) {
-        FormLinkDto formLinkDto = formFacade.createForm(formCreationRequestDto);
+    public ResponseEntity<FormLinkDto> createForm(@RequestBody FormCreationRequestDto formCreationRequestDto,
+                                                  Authentication authentication) {
+        FormLinkDto formLinkDto = formFacade.createForm(formCreationRequestDto, authentication);
         return new ResponseEntity<>(formLinkDto, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{linkId}")
-    public ResponseEntity<Void> fillOutForm(@PathVariable String linkId,
-                                            @RequestBody FormFillOutRequestDto formFillOutRequestDto) {
-        formFacade.fillOutForm(linkId, formFillOutRequestDto);
+    @PostMapping("/{link}")
+    public ResponseEntity<Void> fillOutForm(@PathVariable String link,
+                                            @RequestBody FormFillOutRequestDto formFillOutRequestDto,
+                                            Authentication authentication) {
+        formFacade.fillOutForm(link, formFillOutRequestDto, authentication);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

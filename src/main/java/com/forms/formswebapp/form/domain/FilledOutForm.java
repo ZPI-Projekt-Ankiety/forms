@@ -1,5 +1,7 @@
 package com.forms.formswebapp.form.domain;
 
+import com.forms.formswebapp.form.domain.dto.RespondentData;
+import com.forms.formswebapp.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +20,7 @@ public class FilledOutForm {
     @Id
     private String id;
     private String formId;
-    private String userEmail;
+    private RespondentData respondentData;
     @Builder.Default
     private LocalDateTime filledOutTime = LocalDateTime.now();
     private List<FormAnswer> answers;

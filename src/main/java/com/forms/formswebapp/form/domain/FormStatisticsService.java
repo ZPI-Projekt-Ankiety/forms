@@ -3,13 +3,14 @@ package com.forms.formswebapp.form.domain;
 import com.forms.formswebapp.form.domain.dto.FilledOutFormDto;
 import com.forms.formswebapp.form.domain.dto.FormDemographicDto;
 import com.forms.formswebapp.form.domain.dto.FormSummaryDto;
+import com.forms.formswebapp.form.domain.dto.RespondentData;
 import com.forms.formswebapp.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,24 +47,40 @@ public class FormStatisticsService {
     }
 
     private Map<String, Integer> getAgeGroupsCount(final List<FilledOutFormDto> answers) {
-        return answers.stream()
-                .map(f -> formService.getUserByFilledOutForm(f.id()))
-                .flatMap(Optional::stream)
-                .map(User::age)
-                .map(age -> AGE_GROUPS.entrySet().stream()
-                        .filter(entry -> age <= entry.getValue())
-                        .map(Map.Entry::getKey)
-                        .findFirst()
-                        .orElse("Unknown"))
-                .collect(Collectors.groupingBy(ageGroup -> ageGroup, Collectors.summingInt(ageGroup -> 1)));
+        return AGE_GROUPS.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> (int) answers.stream()
+                                .map(FilledOutFormDto::respondentData)
+                                .filter(respondentData -> respondentData.getBirthdate() != null)
+                                .map(RespondentData::age)
+                                .filter(age -> {
+                                    int upperBound = entry.getValue();
+                                    int lowerBound = getLowerBound(entry.getKey());
+                                    return age > lowerBound && age <= upperBound;
+                                }).count()
+                ));
     }
 
+    private int getLowerBound(String ageGroup) {
+        int currentUpperBound = AGE_GROUPS.get(ageGroup);
+        return AGE_GROUPS.values().stream()
+                .filter(value -> value < currentUpperBound)
+                .max(Integer::compareTo)
+                .orElse(Integer.MIN_VALUE);
+    }
+
+
     private Map<String, Integer> getGenderCount(final List<FilledOutFormDto> answers) {
-        return answers.stream()
-                .map(f -> formService.getUserByFilledOutForm(f.id()))
-                .flatMap(Optional::stream)
+        Map<String, Integer> genderCounts = Arrays.stream(User.Gender.values())
+                .collect(Collectors.toMap(Enum::name, gender -> 0));
+
+        answers.stream()
+                .map(FilledOutFormDto::respondentData)
+                .filter(respondentData -> respondentData.getGender() != null)
                 .map(user -> user.getGender().name())
-                .collect(Collectors.groupingBy(gender -> gender, Collectors.summingInt(gender -> 1)));
+                .forEach(gender -> genderCounts.merge(gender, 1, Integer::sum));
+        return genderCounts;
     }
 
 }

@@ -11,7 +11,8 @@ public record FormResponseDto(
         String title,
         LocalDateTime closingTime,
         String userEmail,
-        List<FormQuestionDto> questions
+        List<FormQuestionDto> questions,
+        Boolean isPersonalDataRequired
 ) {
 
 }

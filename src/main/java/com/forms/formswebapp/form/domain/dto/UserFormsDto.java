@@ -13,7 +13,8 @@ public record UserFormsDto(
         LocalDateTime endDate,
         String userEmail,
         Integer questionsCount,
-        Integer answersCount
+        Integer answersCount,
+        Boolean isPersonalDataRequired
 ) {
 
     public static UserFormsDto from(final Form form, @Nullable final FilledOutForm filledOutForm) {
@@ -24,7 +25,8 @@ public record UserFormsDto(
                 form.getClosingTime(),
                 form.getUser().getEmail(),
                 form.getQuestions() == null ? 0 : form.getQuestions().size(),
-                filledOutForm == null ? 0 : filledOutForm.getAnswers().size()
+                filledOutForm == null ? 0 : filledOutForm.getAnswers().size(),
+                form.getIsPersonalDataRequired()
         );
     }
 

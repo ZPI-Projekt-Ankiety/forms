@@ -35,6 +35,8 @@ public class Form {
     @Builder.Default
     private Status status = Status.OPEN;
 
+    private Boolean isPersonalDataRequired;
+
 
     enum Status {
         OPEN,

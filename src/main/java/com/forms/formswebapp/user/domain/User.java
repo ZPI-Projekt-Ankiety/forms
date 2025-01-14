@@ -71,8 +71,7 @@ public class User implements UserDetails {
 
     public enum Gender {
         MALE,
-        FEMALE,
-        OTHER
+        FEMALE
     }
 
 
@@ -86,7 +85,7 @@ public class User implements UserDetails {
 
     public Gender getGender() {
         if (gender == null) {
-            return Gender.OTHER;
+            return Gender.MALE;
         }
         return gender;
     }
