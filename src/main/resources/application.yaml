@@ -29,3 +29,8 @@ com:
         requiredDynamicFields:
           - "title"
           - "dynamic_url"
+      filledOutFormTemplate:
+        templateId: "d-4c3d21efbaf449dc9fee36882b381f84"
+        requiredDynamicFields:
+          - "form_name"
+          - "answers"
