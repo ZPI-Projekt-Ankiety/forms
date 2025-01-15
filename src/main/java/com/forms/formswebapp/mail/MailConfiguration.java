@@ -15,6 +15,7 @@ class MailConfiguration {
 
     private SendGridConfig sendGrid;
     private TemplateConfig welcomeTemplate;
+    private TemplateConfig filledOutFormTemplate;
     private String webAppUrl;
 
 

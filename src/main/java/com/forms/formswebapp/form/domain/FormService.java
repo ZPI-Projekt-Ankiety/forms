@@ -12,21 +12,23 @@ import com.forms.formswebapp.form.domain.dto.UpdateClosingTimeRequestDto;
 import com.forms.formswebapp.form.domain.dto.UserFormsDto;
 import com.forms.formswebapp.form.domain.exception.FormNotFoundException;
 import com.forms.formswebapp.mail.ExpiredFormNotificationDto;
+import com.forms.formswebapp.mail.FilledOutFormNotificationDto;
 import com.forms.formswebapp.mail.MailFacade;
 import com.forms.formswebapp.user.UserFacade;
 import com.forms.formswebapp.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FormService {
@@ -81,6 +83,7 @@ public class FormService {
                 .answers(savedFormAnswers)
                 .build();
         filledOutFormRepository.save(filledOutForm);
+        sendMailNotification(filledOutForm, form);
     }
 
     public void updateExpiredForms() {
@@ -94,7 +97,6 @@ public class FormService {
         final ExpiredFormNotificationDto request = new ExpiredFormNotificationDto(form.getUser().getEmail(), form.getTitle(), form.getLink());
         mailFacade.sendExpiredFormNotification(request);
     }
-
 
     Form getFormByLink(String link) {
         return formRepository.findByLink(link)
@@ -192,15 +194,6 @@ public class FormService {
                 .build()).toList();
     }
 
-    Optional<User> getUserByFilledOutForm(String filledOutFormId) {
-        final FilledOutForm filledOutForm = getFilledOutForm(filledOutFormId);
-        final RespondentData filledOutFormRespondentData = filledOutForm.getRespondentData();
-        if (filledOutFormRespondentData == null) {
-            return Optional.empty();
-        }
-        return userService.getUserByEmail(filledOutFormRespondentData.getUserEmail());
-    }
-
     private static void validateFormNotClosed(String linkId, Form form) {
         if(form.getStatus() == Form.Status.CLOSED) {
             throw new IllegalArgumentException("Form with link %s is closed".formatted(linkId));
@@ -226,4 +219,26 @@ public class FormService {
         User user = userService.getUserByEmailOrThrow(authentication.getName());
         return new RespondentData(user.getEmail(), user.getBirthdate(), user.getGender());
     }
+
+    private String getFormQuestionNameById(final String questionId) {
+        return formQuestionRepository.findById(questionId).map(FormQuestion::getQuestion).orElse(questionId);
+    }
+
+    private void sendMailNotification(final FilledOutForm filledOutForm, final Form form) {
+        final RespondentData respondentData = filledOutForm.getRespondentData();
+
+        if (respondentData == null) {
+            log.info("sendMailNotification() - skipped sending mail notification, respondent data is required");
+            return;
+        }
+
+        final FilledOutFormNotificationDto notification = new FilledOutFormNotificationDto(
+                respondentData.getUserEmail(),
+                form.getTitle(),
+                filledOutForm.getAnswers().stream().map(f ->
+                        new FilledOutFormNotificationDto.Answer(getFormQuestionNameById(f.getQuestionId()), f.getAnswer())
+                ).toList());
+        mailFacade.sendFilledOutFormNotification(notification);
+    }
+
 }
