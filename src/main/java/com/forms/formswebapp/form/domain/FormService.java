@@ -114,6 +114,7 @@ public class FormService {
                                 .possibleAnswers(formQuestion.getPossibleAnswers())
                                 .correctAnswerIndexes(formQuestion.getCorrectAnswerIndexes())
                                 .questionText(formQuestion.getQuestionText())
+                                .required(formQuestion.isRequired())
                                 .build())
                         .toList())
                 .isPersonalDataRequired(form.getIsPersonalDataRequired())
