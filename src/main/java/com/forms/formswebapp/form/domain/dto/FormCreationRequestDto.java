@@ -6,7 +6,6 @@ import java.util.List;
 public record FormCreationRequestDto(
         String title,
         LocalDateTime closingTime,
-        List<String> questions,
         Boolean isPersonalDataRequired,
         List<QuestionCreationDto> questions
 ) {

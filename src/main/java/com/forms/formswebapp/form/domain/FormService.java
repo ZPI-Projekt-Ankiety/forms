@@ -1,7 +1,7 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.domain;
 
-import com.forms.formswebapp.form.dto.*;
-import com.forms.formswebapp.form.exception.FormNotFoundException;
+import com.forms.formswebapp.form.domain.dto.*;
+import com.forms.formswebapp.form.domain.exception.FormNotFoundException;
 import com.forms.formswebapp.mail.ExpiredFormNotificationDto;
 import com.forms.formswebapp.mail.FilledOutFormNotificationDto;
 import com.forms.formswebapp.mail.MailFacade;
@@ -30,13 +30,10 @@ public class FormService {
     private final FilledOutFormRepository filledOutFormRepository;
     private final UserFacade userService;
     private final MailFacade mailFacade;
-    private final FormCreationValidator validator;
 
     public FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto, Authentication authentication) {
         String uniqueLink = UUID.randomUUID().toString();
         User user = userService.getUserByEmailOrThrow(authentication.getName());
-
-        validator.validate(formCreationRequestDto);
 
         List<FormQuestion> questions = formCreationRequestDto.questions().stream()
                 .map(question -> FormQuestion.builder()
@@ -230,7 +227,7 @@ public class FormService {
     }
 
     private String getFormQuestionNameById(final String questionId) {
-        return formQuestionRepository.findById(questionId).map(FormQuestion::getQuestion).orElse(questionId);
+        return formQuestionRepository.findById(questionId).map(FormQuestion::getQuestionText).orElse(questionId);
     }
 
     private void sendMailNotification(final FilledOutForm filledOutForm, final Form form) {
@@ -245,7 +242,7 @@ public class FormService {
                 respondentData.getUserEmail(),
                 form.getTitle(),
                 filledOutForm.getAnswers().stream().map(f ->
-                        new FilledOutFormNotificationDto.Answer(getFormQuestionNameById(f.getQuestionId()), f.getAnswer())
+                        new FilledOutFormNotificationDto.Answer(getFormQuestionNameById(f.getQuestionId()), f.getFreetextAnswer())
                 ).toList());
         mailFacade.sendFilledOutFormNotification(notification);
     }

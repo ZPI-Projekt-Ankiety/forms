@@ -1,6 +1,6 @@
 package com.forms.formswebapp.form.domain;
 
-import com.forms.formswebapp.form.dto.QuestionType;
+import com.forms.formswebapp.form.domain.dto.QuestionType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
