@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.forms.formswebapp.user.domain.model.request.RegisterRequest;
 import com.forms.formswebapp.user.domain.model.shared.Role;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Document(collection = "users")
@@ -28,6 +29,10 @@ public class User implements UserDetails {
     private String firstname;
 
     private String lastname;
+
+    private Gender gender;
+
+    private LocalDate birthdate;
 
     private Role role;
 
@@ -62,6 +67,27 @@ public class User implements UserDetails {
                 request.firstname(),
                 request.lastname(),
                 Role.USER);
+    }
+
+    public enum Gender {
+        MALE,
+        FEMALE
+    }
+
+
+    public int age() {
+        if (birthdate == null) {
+            return 0;
+        }
+        return LocalDate.now().getYear() - birthdate.getYear();
+    }
+
+
+    public Gender getGender() {
+        if (gender == null) {
+            return Gender.MALE;
+        }
+        return gender;
     }
 
 }

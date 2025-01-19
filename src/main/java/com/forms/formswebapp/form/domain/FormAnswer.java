@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.domain;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,12 +12,12 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class FilledOutForm {
+public class FormAnswer {
 
     @Id
     private String id;
-    private String formId;
-    private String userEmail;
-    private List<FormAnswer> answers;
+    private String questionId;
+    private String freetextAnswer;
+    private List<Integer> chosenAnswerIndexes;
 
 }

@@ -43,7 +43,8 @@ class AdminController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User successfully deleted"),
-            @ApiResponse(responseCode = "400", description = "User not found"),
+            @ApiResponse(responseCode = "400", description = "Cannot delete admin user"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "403", description = "Unauthorized")
     })
     @DeleteMapping("/{email}")
@@ -57,7 +58,8 @@ class AdminController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User successfully promoted"),
-            @ApiResponse(responseCode = "400", description = "User not found"),
+            @ApiResponse(responseCode = "404", description = "Cannot promote admin"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "403", description = "Unauthorized")
     })
     @PatchMapping("/promote/{email}")
@@ -65,6 +67,19 @@ class AdminController {
     ResponseEntity<UserDto> promoteUser(final Authentication authentication, @PathVariable final String email) {
         log.info("Promoting user for admin = {}", authentication.getName());
         return ResponseEntity.ok(userService.promoteUser(email));
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Admin successfully demoted to user"),
+            @ApiResponse(responseCode = "400", description = "Cannot demote user"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @PatchMapping("/demote/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<UserDto> demoteUser(final Authentication authentication, @PathVariable final String email) {
+        log.info("Demoting user from admin = {}", authentication.getName());
+        return ResponseEntity.ok(userService.demoteUser(email));
     }
 
 }

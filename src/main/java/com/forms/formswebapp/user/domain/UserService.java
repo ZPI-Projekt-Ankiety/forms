@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +41,10 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    public Optional<User> getUserByEmail(final String email) {
+        return userRepository.findByEmail(email);
+    }
+
     boolean existsByEmail(final String email) {
         return userRepository.existsByEmail(email);
     }
@@ -58,14 +62,36 @@ public class UserService implements UserDetailsService {
 
     public void deleteUser(final String email) {
         final User user = getUserByEmailOrThrow(email);
+        this.checkIfNotAdmin(user);
         userRepository.delete(user);
     }
 
     public UserDto promoteUser(final String email) {
         final User user = getUserByEmailOrThrow(email);
+        this.checkIfNotAdmin(user);
         user.setRole(Role.ADMIN);
         final User saved = userRepository.save(user);
-        return UserDto.from(user);
+        return UserDto.from(saved);
+    }
+
+    public UserDto demoteUser(final String email) {
+        final User user = getUserByEmailOrThrow(email);
+        this.checkIfAdmin(user);
+        user.setRole(Role.USER);
+        final User saved = userRepository.save(user);
+        return UserDto.from(saved);
+    }
+
+    private void checkIfNotAdmin(final User user) {
+        if (user.getRole() == Role.ADMIN) {
+            throw new IllegalStateException("Cannot perform this operation on admin user");
+        }
+    }
+
+    private void checkIfAdmin(final User user) {
+        if (user.getRole() != Role.ADMIN) {
+            throw new IllegalStateException("Cannot perform this operation on regular user");
+        }
     }
 
 }

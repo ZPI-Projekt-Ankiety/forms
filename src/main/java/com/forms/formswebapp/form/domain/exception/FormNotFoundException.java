@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form.exception;
+package com.forms.formswebapp.form.domain.exception;
 
 public class FormNotFoundException extends RuntimeException {
 

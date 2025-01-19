@@ -1,7 +1,7 @@
-package com.forms.formswebapp.form.dto;
+package com.forms.formswebapp.form.domain.dto;
 
-import com.forms.formswebapp.form.FilledOutForm;
-import com.forms.formswebapp.form.Form;
+import com.forms.formswebapp.form.domain.FilledOutForm;
+import com.forms.formswebapp.form.domain.Form;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
@@ -13,7 +13,8 @@ public record UserFormsDto(
         LocalDateTime endDate,
         String userEmail,
         Integer questionsCount,
-        Integer answersCount
+        Integer answersCount,
+        Boolean isPersonalDataRequired
 ) {
 
     public static UserFormsDto from(final Form form, @Nullable final FilledOutForm filledOutForm) {
@@ -24,7 +25,8 @@ public record UserFormsDto(
                 form.getClosingTime(),
                 form.getUser().getEmail(),
                 form.getQuestions() == null ? 0 : form.getQuestions().size(),
-                filledOutForm == null ? 0 : filledOutForm.getAnswers().size()
+                filledOutForm == null ? 0 : filledOutForm.getAnswers().size(),
+                form.getIsPersonalDataRequired()
         );
     }
 

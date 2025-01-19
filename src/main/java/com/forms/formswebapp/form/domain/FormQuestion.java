@@ -1,4 +1,4 @@
-package com.forms.formswebapp.form;
+package com.forms.formswebapp.form.domain;
 
 import com.forms.formswebapp.form.dto.QuestionType;
 import lombok.Builder;
