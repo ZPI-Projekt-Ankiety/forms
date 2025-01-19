@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document
 @Builder
 @Getter
@@ -15,6 +17,7 @@ public class FormAnswer {
     @Id
     private String id;
     private String questionId;
-    private String answer;
+    private String freetextAnswer;
+    private List<Integer> chosenAnswerIndexes;
 
 }

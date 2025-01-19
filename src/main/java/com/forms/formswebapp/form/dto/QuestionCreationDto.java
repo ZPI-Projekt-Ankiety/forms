@@ -1,18 +1,13 @@
 package com.forms.formswebapp.form.dto;
 
-import lombok.Builder;
-
 import java.util.List;
 
-@Builder
-public record FormQuestionDto(
-        String id,
+public record QuestionCreationDto(
         QuestionType questionType,
         boolean required,
         String questionText,
         List<String> possibleAnswers,
         List<Integer> correctAnswerIndexes
-
 
 ) {
 }

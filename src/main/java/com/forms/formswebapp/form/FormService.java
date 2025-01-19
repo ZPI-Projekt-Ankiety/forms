@@ -26,14 +26,21 @@ class FormService {
     private final FilledOutFormRepository filledOutFormRepository;
     private final UserFacade userService;
     private final MailFacade mailFacade;
+    private final FormCreationValidator validator;
 
     FormLinkDto createForm(FormCreationRequestDto formCreationRequestDto) {
         String uniqueLink = UUID.randomUUID().toString();
         User user = userService.getUserByEmailOrThrow(formCreationRequestDto.userEmail());
 
+        validator.validate(formCreationRequestDto);
+
         List<FormQuestion> questions = formCreationRequestDto.questions().stream()
                 .map(question -> FormQuestion.builder()
-                        .question(question)
+                        .questionText(question.questionText())
+                        .questionType(question.questionType())
+                        .possibleAnswers(question.possibleAnswers())
+                        .correctAnswerIndexes(question.correctAnswerIndexes())
+                        .required(question.required())
                         .build())
                 .toList();
 
@@ -55,12 +62,12 @@ class FormService {
         Form form = getFormByLink(linkId);
 
         validateFormNotClosed(linkId, form);
-        validateAllQuestionsAnsweredInRequest(formFillOutRequestDto, form);
 
         List<FormAnswer> answers = formFillOutRequestDto.answers().stream()
                 .map(formAnswerDto -> FormAnswer.builder()
                         .questionId(formAnswerDto.questionId())
-                        .answer(formAnswerDto.answer())
+                        .freetextAnswer(formAnswerDto.freetextAnswer())
+                        .chosenAnswerIndexes(formAnswerDto.chosenAnswerIndexes())
                         .build())
                 .toList();
         List<FormAnswer> savedFormAnswers = formAnswerRepository.saveAll(answers);
@@ -101,7 +108,10 @@ class FormService {
                 .questions(form.getQuestions().stream()
                         .map(formQuestion -> FormQuestionDto.builder()
                                 .id(formQuestion.getId())
-                                .question(formQuestion.getQuestion())
+                                .questionType(formQuestion.getQuestionType())
+                                .possibleAnswers(formQuestion.getPossibleAnswers())
+                                .correctAnswerIndexes(formQuestion.getCorrectAnswerIndexes())
+                                .questionText(formQuestion.getQuestionText())
                                 .build())
                         .toList())
                 .build();
@@ -131,7 +141,11 @@ class FormService {
                 .id(filledOutForm.getId())
                 .userEmail(filledOutForm.getUserEmail())
                 .formAnswers(filledOutForm.getAnswers().stream()
-                        .map(formAnswer -> new FormAnswerDto(formAnswer.getQuestionId(), formAnswer.getAnswer())
+                        .map(formAnswer -> new FormAnswerDto(
+                                formAnswer.getQuestionId(),
+                                formAnswer.getFreetextAnswer(),
+                                formAnswer.getChosenAnswerIndexes()
+                        )
                 ).toList())
                 .build();
     }
@@ -143,7 +157,10 @@ class FormService {
         return answeredForms.stream().map(filledOutForm -> FilledOutFormDto.builder()
                 .id(filledOutForm.getId())
                 .formAnswers(filledOutForm.getAnswers().stream()
-                        .map(formAnswer -> new FormAnswerDto(formAnswer.getQuestionId(), formAnswer.getAnswer())
+                        .map(formAnswer -> new FormAnswerDto(
+                                formAnswer.getQuestionId(),
+                                formAnswer.getFreetextAnswer(),
+                                formAnswer.getChosenAnswerIndexes())
                         ).toList())
                 .userEmail(filledOutForm.getUserEmail())
                 .build())
@@ -184,15 +201,4 @@ class FormService {
         }
     }
 
-    private static void validateAllQuestionsAnsweredInRequest(FormFillOutRequestDto formFillOutRequestDto, Form form) {
-        Set<String> questionIds = form.getQuestions().stream()
-                .map(FormQuestion::getId)
-                .collect(Collectors.toSet());
-        Set<String> answeredQuestionIds = formFillOutRequestDto.answers().stream()
-                .map(FormAnswerDto::questionId)
-                .collect(Collectors.toSet());
-        if(!questionIds.equals(answeredQuestionIds)) {
-            throw new IllegalArgumentException("Question IDs in filled out form do not match with actual question IDs");
-        }
-    }
 }

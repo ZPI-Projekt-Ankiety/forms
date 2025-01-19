@@ -7,7 +7,7 @@ public record FormCreationRequestDto(
         String userEmail,
         String title,
         LocalDateTime closingTime,
-        List<String> questions
+        List<QuestionCreationDto> questions
 ) {
 
 }
