@@ -15,8 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -201,21 +202,32 @@ public class FormService {
                 .build()).toList();
     }
 
+    public List<AnsweredFormDto> getUserAnsweredForms(String email) {
+        List<FilledOutForm> allByRespondentEmail = filledOutFormRepository.findAllByRespondentEmail(email);
+        Map<String, Form> formsByLink = getAllFormsByIdIn(allByRespondentEmail.stream()
+                .map(FilledOutForm::getFormId)
+                .toList());
+
+        return allByRespondentEmail.stream()
+                .map(filledOutForm -> {
+                    Form form = formsByLink.get(filledOutForm.getFormId());
+                    return new AnsweredFormDto(
+                            filledOutForm.getFormId(),
+                            form.getTitle(),
+                            filledOutForm.getFilledOutTime(),
+                            form.getUser().getEmail());
+                })
+                .toList();
+    }
+
+    private Map<String, Form> getAllFormsByIdIn(List<String> links) {
+        return formRepository.findAllByIdIn(links).stream()
+                .collect(Collectors.toMap(Form::getId, Function.identity()));
+    }
+
     private static void validateFormNotClosed(String linkId, Form form) {
         if(form.getStatus() == Form.Status.CLOSED) {
             throw new IllegalArgumentException("Form with link %s is closed".formatted(linkId));
-        }
-    }
-
-    private static void validateAllQuestionsAnsweredInRequest(FormFillOutRequestDto formFillOutRequestDto, Form form) {
-        Set<String> questionIds = form.getQuestions().stream()
-                .map(FormQuestion::getId)
-                .collect(Collectors.toSet());
-        Set<String> answeredQuestionIds = formFillOutRequestDto.answers().stream()
-                .map(FormAnswerDto::questionId)
-                .collect(Collectors.toSet());
-        if(!questionIds.equals(answeredQuestionIds)) {
-            throw new IllegalArgumentException("Question IDs in filled out form do not match with actual question IDs");
         }
     }
 
@@ -247,5 +259,4 @@ public class FormService {
                 ).toList());
         mailFacade.sendFilledOutFormNotification(notification);
     }
-
 }

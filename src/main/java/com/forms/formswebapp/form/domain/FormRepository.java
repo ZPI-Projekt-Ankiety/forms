@@ -15,4 +15,6 @@ interface FormRepository extends MongoRepository<Form, String> {
 
     List<Form> findByUser(final User user);
 
+    List<Form> findAllByIdIn(List<String> links);
+
 }

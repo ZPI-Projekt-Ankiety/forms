@@ -1,13 +1,7 @@
 package com.forms.formswebapp.form.web;
 
 import com.forms.formswebapp.form.FormFacade;
-import com.forms.formswebapp.form.domain.dto.FilledOutFormDto;
-import com.forms.formswebapp.form.domain.dto.FormCreationRequestDto;
-import com.forms.formswebapp.form.domain.dto.FormFillOutRequestDto;
-import com.forms.formswebapp.form.domain.dto.FormLinkDto;
-import com.forms.formswebapp.form.domain.dto.FormResponseDto;
-import com.forms.formswebapp.form.domain.dto.UpdateClosingTimeRequestDto;
-import com.forms.formswebapp.form.domain.dto.UserFormsDto;
+import com.forms.formswebapp.form.domain.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,6 +75,12 @@ public class FormController {
     public ResponseEntity<?> getUserCreatedForms(final Authentication authentication) {
         final List<FormResponseDto> userCreatedForms = formFacade.getUserCreatedForms(authentication.getName());
         return ResponseEntity.ok(userCreatedForms);
+    }
+
+    @GetMapping("/user-answered")
+    public ResponseEntity<?> getUserAnsweredForms(final Authentication authentication) {
+        final List<AnsweredFormDto> userAnsweredForms = formFacade.getUserAnsweredForms(authentication.getName());
+        return ResponseEntity.ok(userAnsweredForms);
     }
 
 }

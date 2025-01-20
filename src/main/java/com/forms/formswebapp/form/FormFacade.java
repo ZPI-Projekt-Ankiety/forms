@@ -1,13 +1,7 @@
 package com.forms.formswebapp.form;
 
 import com.forms.formswebapp.form.domain.FormService;
-import com.forms.formswebapp.form.domain.dto.FilledOutFormDto;
-import com.forms.formswebapp.form.domain.dto.FormCreationRequestDto;
-import com.forms.formswebapp.form.domain.dto.FormFillOutRequestDto;
-import com.forms.formswebapp.form.domain.dto.FormLinkDto;
-import com.forms.formswebapp.form.domain.dto.FormResponseDto;
-import com.forms.formswebapp.form.domain.dto.UpdateClosingTimeRequestDto;
-import com.forms.formswebapp.form.domain.dto.UserFormsDto;
+import com.forms.formswebapp.form.domain.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -55,5 +49,9 @@ public class FormFacade {
 
     public List<FormResponseDto> getUserCreatedForms(String name) {
         return formService.getUserCreatedForms(name);
+    }
+
+    public List<AnsweredFormDto> getUserAnsweredForms(String email) {
+        return formService.getUserAnsweredForms(email);
     }
 }
