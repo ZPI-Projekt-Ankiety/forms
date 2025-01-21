@@ -27,8 +27,8 @@ public class FormFacade {
         formService.fillOutForm(linkId, formFillOutRequestDto, authentication);
     }
 
-    public FilledOutFormDto getFilledOutForm(String filledOutFormId) {
-        return formService.getFilledOutFormDto(filledOutFormId);
+    public FilledOutFormDto getFilledOutForm(String filledOutFormId, String userEmail) {
+        return formService.getFilledOutFormDto(filledOutFormId, userEmail);
     }
 
     public List<FilledOutFormDto> getAnswersForForm(String link) {

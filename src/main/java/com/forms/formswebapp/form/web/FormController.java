@@ -40,8 +40,8 @@ public class FormController {
     }
 
     @GetMapping("/answer/{filledOutFormId}")
-    public ResponseEntity<FilledOutFormDto> getFilledOutForm(@PathVariable String filledOutFormId) {
-        FilledOutFormDto filledOutForm = formFacade.getFilledOutForm(filledOutFormId);
+    public ResponseEntity<FilledOutFormDto> getFilledOutForm(@PathVariable String filledOutFormId, Authentication authentication) {
+        FilledOutFormDto filledOutForm = formFacade.getFilledOutForm(filledOutFormId, authentication.getName());
         return new ResponseEntity<>(filledOutForm, HttpStatus.OK);
     }
 

@@ -12,6 +12,9 @@ public interface FilledOutFormRepository extends MongoRepository<FilledOutForm, 
 
     Optional<FilledOutForm> findByFormId(String formId);
 
+    @Query("{ 'formId': ?0, 'respondentData.userEmail': ?1 }")
+    Optional<FilledOutForm> findByFormIdAndUserEmail(String formId, String userEmail);
+
     @Query("{ 'respondentData.userEmail': ?0 }")
     List<FilledOutForm> findAllByRespondentEmail(String userEmail);
 

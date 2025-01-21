@@ -64,6 +64,7 @@ public class FormService {
         Form form = getFormByLink(linkId);
 
         validateFormNotClosed(linkId, form);
+        validateFormNotFilledOutAlready(linkId, authentication.getName());
 
         List<FormAnswer> answers = formFillOutRequestDto.answers().stream()
                 .map(formAnswerDto -> FormAnswer.builder()
@@ -80,6 +81,13 @@ public class FormService {
                 .build();
         filledOutFormRepository.save(filledOutForm);
         sendMailNotification(filledOutForm, form);
+    }
+
+    private void validateFormNotFilledOutAlready(String linkId, String email) {
+        Form formByLink = getFormByLink(linkId);
+        if(filledOutFormRepository.findByFormIdAndUserEmail(formByLink.getId(), email).isPresent()) {
+            throw new IllegalArgumentException("Cannot fill out the same form twice");
+        }
     }
 
     public void updateExpiredForms() {
@@ -133,14 +141,14 @@ public class FormService {
         }).toList();
     }
 
-    public FilledOutForm getFilledOutForm(String filledOutFormId) {
-        return filledOutFormRepository.findById(filledOutFormId).orElseThrow(
+    public FilledOutForm getFilledOutForm(String filledOutFormId, String userEmail) {
+        return filledOutFormRepository.findByFormIdAndUserEmail(filledOutFormId, userEmail).orElseThrow(
                 () -> new EmptyResultDataAccessException("Filled out form not found", 1)
         );
     }
 
-    public FilledOutFormDto getFilledOutFormDto(String filledOutFormId) {
-        FilledOutForm filledOutForm = getFilledOutForm(filledOutFormId);
+    public FilledOutFormDto getFilledOutFormDto(String filledOutFormId, String userEmail) {
+        FilledOutForm filledOutForm = getFilledOutForm(filledOutFormId, userEmail);
 
         return FilledOutFormDto.builder()
                 .id(filledOutForm.getId())
