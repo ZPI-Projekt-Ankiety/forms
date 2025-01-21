@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public record FilledOutFormDto(
         String id,
-        String formId,
+        String linkId,
         RespondentData respondentData,
         LocalDateTime filledOutAt,
         List<FormAnswerDto> formAnswers

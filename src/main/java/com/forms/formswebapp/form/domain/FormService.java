@@ -149,11 +149,12 @@ public class FormService {
 
     public FilledOutFormDto getFilledOutFormDto(String filledOutFormId, String userEmail) {
         FilledOutForm filledOutForm = getFilledOutForm(filledOutFormId, userEmail);
+        Form form = getById(filledOutForm.getFormId());
 
         return FilledOutFormDto.builder()
                 .id(filledOutForm.getId())
                 .filledOutAt(filledOutForm.getFilledOutTime())
-                .formId(filledOutForm.getFormId())
+                .linkId(form.getLink())
                 .respondentData(filledOutForm.getRespondentData())
                 .formAnswers(filledOutForm.getAnswers().stream()
                         .map(formAnswer -> new FormAnswerDto(
@@ -233,6 +234,11 @@ public class FormService {
     private Map<String, Form> getAllFormsByIdIn(List<String> links) {
         return formRepository.findAllByIdIn(links).stream()
                 .collect(Collectors.toMap(Form::getId, Function.identity()));
+    }
+
+    private Form getById(String formId) {
+        return formRepository.findById(formId).orElseThrow(() -> new IllegalArgumentException("Form with ID=%s not found"
+                .formatted(formId)));
     }
 
     private static void validateFormNotClosed(String linkId, Form form) {
