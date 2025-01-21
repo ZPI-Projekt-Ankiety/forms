@@ -125,7 +125,7 @@ public class FormService {
 
     public List<UserFormsDto> getUserForms(final String email) {
         final User user = userService.getUserByEmailOrThrow(email);
-        final List<Form> forms = formRepository.findByUser(user);
+        final List<Form> forms = formRepository.findByUser(user.getEmail());
 
         return forms.stream().map(form -> {
             final FilledOutForm filledOutForm = filledOutFormRepository.findByFormId(form.getId()).orElse(null);
@@ -192,7 +192,7 @@ public class FormService {
 
     public List<FormResponseDto> getUserCreatedForms(String email) {
         User user = userService.getUserByEmailOrThrow(email);
-        List<Form> userCreatedForms = formRepository.findByUser(user);
+        List<Form> userCreatedForms = formRepository.findByUser(user.getEmail());
         return userCreatedForms.stream().map(form -> FormResponseDto.builder()
                 .link(form.getLink())
                 .title(form.getTitle())

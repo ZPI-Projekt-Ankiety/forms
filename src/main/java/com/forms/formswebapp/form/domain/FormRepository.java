@@ -2,6 +2,7 @@ package com.forms.formswebapp.form.domain;
 
 import com.forms.formswebapp.user.domain.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +14,8 @@ interface FormRepository extends MongoRepository<Form, String> {
 
     Optional<Form> findByLink(String link);
 
-    List<Form> findByUser(final User user);
+    @Query("{ 'user.email': ?0 }")
+    List<Form> findByUser(final String userEmail);
 
     List<Form> findAllByIdIn(List<String> links);
 
