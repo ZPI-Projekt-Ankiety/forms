@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,33 +45,28 @@ public class FormStatisticsService {
 
     public FormDemographicDto getFormDemographicStatistics(final String link) {
         final List<FilledOutFormDto> answers = formService.getAnswersForForm(link);
-        return new FormDemographicDto(getAgeGroupsCount(answers), getGenderCount(answers));
+        return new FormDemographicDto(getGenderCount(answers), getAgeGroupsCount(answers));
     }
 
     private Map<String, Integer> getAgeGroupsCount(final List<FilledOutFormDto> answers) {
-        return AGE_GROUPS.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> (int) answers.stream()
-                                .map(FilledOutFormDto::respondentData)
-                                .filter(respondentData -> respondentData.getBirthdate() != null)
-                                .map(RespondentData::age)
-                                .filter(age -> {
-                                    int upperBound = entry.getValue();
-                                    int lowerBound = getLowerBound(entry.getKey());
-                                    return age > lowerBound && age <= upperBound;
-                                }).count()
-                ));
-    }
+        Map<String, Integer> ageGroupsCount = new LinkedHashMap<>();
+        AGE_GROUPS.forEach((groupLabel, upperBound) -> ageGroupsCount.put(groupLabel, 0));
 
-    private int getLowerBound(String ageGroup) {
-        int currentUpperBound = AGE_GROUPS.get(ageGroup);
-        return AGE_GROUPS.values().stream()
-                .filter(value -> value < currentUpperBound)
-                .max(Integer::compareTo)
-                .orElse(Integer.MIN_VALUE);
-    }
+        for (FilledOutFormDto formDto : answers) {
+            int age = (formDto.respondentData() == null) ? 0 : formDto.respondentData().age();
 
+            for (Map.Entry<String, Integer> groupEntry : AGE_GROUPS.entrySet()) {
+                if (age <= groupEntry.getValue()) {
+                    ageGroupsCount.put(
+                            groupEntry.getKey(),
+                            ageGroupsCount.get(groupEntry.getKey()) + 1
+                    );
+                    break;
+                }
+            }
+        }
+        return ageGroupsCount;
+    }
 
     private Map<String, Integer> getGenderCount(final List<FilledOutFormDto> answers) {
         Map<String, Integer> genderCounts = Arrays.stream(User.Gender.values())
