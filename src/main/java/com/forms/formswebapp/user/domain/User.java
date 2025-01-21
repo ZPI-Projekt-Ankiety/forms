@@ -51,12 +51,13 @@ public class User implements UserDetails {
         return email;
     }
 
-    User(final String id, final String email, final String password, final String firstname, final String lastname, final Role role) {
+    User(final String id, final String email, final String password, final String firstname, final String lastname, final LocalDate birthdate, final Role role) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.birthdate = birthdate;
         this.role = role;
     }
 
@@ -66,6 +67,7 @@ public class User implements UserDetails {
                 encodedPassword,
                 request.firstname(),
                 request.lastname(),
+                request.birthdate(),
                 Role.USER);
     }
 
