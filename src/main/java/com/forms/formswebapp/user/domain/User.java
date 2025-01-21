@@ -51,13 +51,14 @@ public class User implements UserDetails {
         return email;
     }
 
-    User(final String id, final String email, final String password, final String firstname, final String lastname, final LocalDate birthdate, final Role role) {
+    User(final String id, final String email, final String password, final String firstname, final String lastname, final LocalDate birthdate, final Gender gender, final Role role) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
         this.birthdate = birthdate;
+        this.gender = gender;
         this.role = role;
     }
 
@@ -68,6 +69,7 @@ public class User implements UserDetails {
                 request.firstname(),
                 request.lastname(),
                 request.birthdate(),
+                request.gender(),
                 Role.USER);
     }
 
