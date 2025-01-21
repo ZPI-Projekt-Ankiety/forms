@@ -152,6 +152,8 @@ public class FormService {
 
         return FilledOutFormDto.builder()
                 .id(filledOutForm.getId())
+                .filledOutAt(filledOutForm.getFilledOutTime())
+                .formId(filledOutForm.getFormId())
                 .respondentData(filledOutForm.getRespondentData())
                 .formAnswers(filledOutForm.getAnswers().stream()
                         .map(formAnswer -> new FormAnswerDto(
